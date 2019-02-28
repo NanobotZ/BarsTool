@@ -23,6 +23,7 @@ For download click the "X release(s)" button just below "BARS file editor for TL
 
 If the resulting .bars file is bigger in size than the original file, make sure to update the RSTB file:
 https://zeldamods.org/wiki/Help:Updating_the_RSTB
+The rstbool doesn't automatically calculate a new size, so the safest bet would be using a 'size (in bytes) + 1024' for the new value.
 
 This may also result with bugs when the console's memory runs out because of the bigger audio sizes.
 
