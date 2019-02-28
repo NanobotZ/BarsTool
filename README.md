@@ -44,3 +44,7 @@ While reporting a bug, please specify:
 - the console you're using (WiiU / Switch)
 - the name of the bars file you're trying to edit (BoTW only)
 - (if possible) a sound file you want to replace the original with (BoTW only)
+
+### Thanks
+
+Thanks to SamusAranX's [bars_extractor.py](https://gist.github.com/SamusAranX/6eb8b6fd1777b17afc3107a979c2409a) script that helped a lot with figuring out .bars format.
