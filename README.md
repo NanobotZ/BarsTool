@@ -12,8 +12,7 @@ Please remember that this tool is new (read: beta) and was not tested extensivel
 - Supports both WiiU and Switch (Big Endian and Little Endian byte order)
 - Gives you the important information about a selected audio file.
 - Supports replacing BFWAV and BFSTP files.
-- Can correctly replace audio files with longer/bigger audio files.
-- Can correctly replace audio files with different properties (more on this below).
+- Can correctly replace audio files with properties different than in the original audio (more on this below).
 - Automatically makes a backup of the original .bars file next to it with a .backup extension added.
 
 ### Beware
@@ -31,6 +30,8 @@ Those don't have to be met AT ALL, but can sometimes result in something not wor
 - the same audio encoding
 - the same amount of audio channels
 - the same sample rate
+
+This should be met:
 - the same looping status (with this - correctly set loopStart frame etc.)
 
 ### Bug Reporting
