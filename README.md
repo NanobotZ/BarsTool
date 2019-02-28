@@ -7,6 +7,10 @@ This tool assumes your new audio files are 100% fine, please make sure they work
 
 Please remember that this tool is new (read: beta) and was not tested extensively.
 
+### Download
+
+For download click the "X release(s)" button just below "BARS file editor for TLOZ: Breath of The Wild" text.
+
 ### Features
 
 - Supports both WiiU and Switch (Big Endian and Little Endian byte order)
