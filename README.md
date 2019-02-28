@@ -1,6 +1,6 @@
 ## BarsTool
 
-BarsTool is a .bars file editor, which allows you to easily extract or replace sound files embedded inside.
+BarsTool is a GUI-style .bars file editor, which allows you to easily extract or replace sound files embedded inside.
 It was made with The Legend of Zelda: Breath of the Wild in mind.
 
 This tool assumes your new audio files are 100% fine, please make sure they work before replacing anything.
@@ -19,7 +19,7 @@ For download click the "X release(s)" button just below "BARS file editor for TL
 - Can correctly replace audio files with properties different than in the original audio (more on this below).
 - Automatically makes a backup of the original .bars file next to it with a .backup extension added.
 
-### Beware
+### IMPORTANT!
 
 If the resulting .bars file is bigger in size than the original file, make sure to update the RSTB file:
 https://zeldamods.org/wiki/Help:Updating_the_RSTB
