@@ -89,7 +89,7 @@ namespace BarsTool {
 				bs.Seek(4, SeekOrigin.Current);
 				soundEncoding = br.ReadByte();
 				trackLooping = br.ReadByte();
-				bs.Seek(2, SeekOrigin.Current);
+				bs.Seek(2, SeekOrigin.Current); // skip padding
 				sampleRate = br.ReadUInt32(infoBom);
 				loopStart = br.ReadUInt32(infoBom);
 				loopEnd = br.ReadUInt32(infoBom);
@@ -101,8 +101,8 @@ namespace BarsTool {
 				bs.Seek(28, SeekOrigin.Current);
 				soundEncoding = br.ReadByte();
 				trackLooping = br.ReadByte();
-				soundEncoding = br.ReadByte();
 				channelAmount = br.ReadByte();
+				bs.Seek(1, SeekOrigin.Current); // skip Number of regions
 				sampleRate = br.ReadUInt32(infoBom);
 				loopStart = br.ReadUInt32(infoBom);
 				loopEnd = br.ReadUInt32(infoBom);
@@ -118,7 +118,7 @@ namespace BarsTool {
 			length = loopEnd / (float)sampleRate;
 
 			// DEBUG - both of those could happen at once O.o
-			//if(loopEnd < origLoopEnd) {
+			//if (loopEnd < origLoopEnd) {
 			//	ConsoleWriteLine($"loopEnd < origLoopEnd in {trackName}");
 			//}
 			//if (loopEnd > origLoopEnd) {
