@@ -189,12 +189,23 @@ namespace BarsTool {
 		}
 
 		public bool Extract(string path) {
-			using (var fs = new FileStream(path + Path.DirectorySeparatorChar + trackName + trackExtension, FileMode.OpenOrCreate)) {
-				fs.SetLength(0);
-				fs.Write(trackData, 0, trackData.Length);
+			if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+				path.TrimEnd(Path.DirectorySeparatorChar);
+
+			try {
+				using (var fs = new FileStream(path + Path.DirectorySeparatorChar + GetFullName, FileMode.OpenOrCreate)) {
+					fs.SetLength(0);
+					fs.Write(trackData, 0, trackData.Length);
+				}
+			}
+			catch (Exception e) {
+				ConsoleWriteLine("Exception when exporting the song: " + e.Message);
+				return false;
 			}
 			return true;
 		}
+
+		public string GetFullName => trackName + trackExtension;
 
 		public override string ToString() {
 			string info = "";

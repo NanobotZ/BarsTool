@@ -9,9 +9,10 @@ namespace BarsTool {
 		[STAThread]
 		static void Main(string[] args) {
 			//if (!args.Contains("-nogui")) {
-				Application.EnableVisualStyles();
-				Application.SetCompatibleTextRenderingDefault(false);
-				Application.Run(new BarsViewerForm());
+			string path = args.Length >= 1 ? args[0] : "";
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.Run(new BarsViewerForm(path));
 			//}
 		}
 

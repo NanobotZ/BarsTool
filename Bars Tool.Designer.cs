@@ -23,6 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BarsViewerForm));
 			this.filePathTB = new System.Windows.Forms.TextBox();
 			this.fileChooseB = new System.Windows.Forms.Button();
 			this.fileOpenB = new System.Windows.Forms.Button();
@@ -39,6 +40,7 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.sortCB = new System.Windows.Forms.CheckBox();
 			this.selectAllB = new System.Windows.Forms.Button();
+			this.previewB = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// filePathTB
@@ -100,7 +102,7 @@
 			// extractB
 			// 
 			this.extractB.Enabled = false;
-			this.extractB.Location = new System.Drawing.Point(397, 160);
+			this.extractB.Location = new System.Drawing.Point(397, 208);
 			this.extractB.Name = "extractB";
 			this.extractB.Size = new System.Drawing.Size(75, 23);
 			this.extractB.TabIndex = 8;
@@ -111,7 +113,7 @@
 			// replaceB
 			// 
 			this.replaceB.Enabled = false;
-			this.replaceB.Location = new System.Drawing.Point(397, 189);
+			this.replaceB.Location = new System.Drawing.Point(397, 237);
 			this.replaceB.Name = "replaceB";
 			this.replaceB.Size = new System.Drawing.Size(75, 23);
 			this.replaceB.TabIndex = 9;
@@ -198,11 +200,24 @@
 			this.selectAllB.UseVisualStyleBackColor = true;
 			this.selectAllB.Click += new System.EventHandler(this.SelectAllB_Click);
 			// 
+			// previewB
+			// 
+			this.previewB.Enabled = false;
+			this.previewB.Location = new System.Drawing.Point(397, 151);
+			this.previewB.Name = "previewB";
+			this.previewB.Size = new System.Drawing.Size(75, 23);
+			this.previewB.TabIndex = 20;
+			this.previewB.Text = "Preview";
+			this.previewB.UseVisualStyleBackColor = true;
+			this.previewB.Visible = false;
+			this.previewB.Click += new System.EventHandler(this.PreviewB_Click);
+			// 
 			// BarsViewerForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 556);
+			this.Controls.Add(this.previewB);
 			this.Controls.Add(this.selectAllB);
 			this.Controls.Add(this.sortCB);
 			this.Controls.Add(this.label5);
@@ -220,6 +235,7 @@
 			this.Controls.Add(this.fileChooseB);
 			this.Controls.Add(this.filePathTB);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "BarsViewerForm";
 			this.Text = "Bars Tool";
 			this.Load += new System.EventHandler(this.Form1_Load);
@@ -246,6 +262,7 @@
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.CheckBox sortCB;
 		private System.Windows.Forms.Button selectAllB;
+		private System.Windows.Forms.Button previewB;
 	}
 }
 

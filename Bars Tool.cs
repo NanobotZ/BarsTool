@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace BarsTool {
 	public partial class BarsViewerForm : Form {
 		public static TextBox consoleBox;
 		public BOM barsBom;
+		public string windowTitle;
 
 		public static readonly string AMTA_HEADER = "AMTA";
 		public static readonly string BARS_HEADER = "BARS";
@@ -31,13 +33,23 @@ namespace BarsTool {
 
 		List<TrackData> trackList;
 
-		public BarsViewerForm() {
+		public BarsViewerForm(string path = null) {
 			InitializeComponent();
+			windowTitle = this.Text;
+			filePathFull = path;
+#if DEBUG
+			previewB.Visible = true;
+#endif
 		}
 
 		private void Form1_Load(object sender, EventArgs e) {
 			consoleBox = consoleTB;
 			trackList = new List<TrackData>();
+
+			if (filePathFull != "") {
+				filePathTB.Text = filePathFull;
+				FileOpenB_Click(null, null); // smelly workaround
+			}
 		}
 
 		private void FileChooseB_Click(object sender, EventArgs e) {
@@ -47,28 +59,30 @@ namespace BarsTool {
 			if (openFileDialog.ShowDialog() == DialogResult.OK) {
 				if (openFileDialog.FileName.EndsWith(".bars")) {
 					string fn = openFileDialog.FileName;
-					filePathTB.Text = fn;
-					int i = fn.LastIndexOf(Path.DirectorySeparatorChar);
-					filePath = fn.Substring(0, i);
-					fileName = fn.Substring(i + 1, fn.Length - i - 6); // -6 beacuse: -1 cause of i + 1 and -5 cause of '.bars' extension
 					filePathFull = fn;
+					filePathTB.Text = fn;
 				}
 			}
 		}
 
 		private void FileOpenB_Click(object sender, EventArgs e) {
-			string filename = filePathTB.Text;
-			if (filename == "" || !filename.EndsWith(".bars")) {
+			// string filePathFull = filePathTB.Text;
+			if (filePathFull == "" || !filePathFull.EndsWith(".bars")) {
 				ConsoleWriteLine("No file choosen or incorrect file.");
 				return;
 			}
 
+			int charIndex = filePathFull.LastIndexOf(Path.DirectorySeparatorChar);
+			filePath = filePathFull.Substring(0, charIndex);
+			fileName = filePathFull.Substring(charIndex + 1, filePathFull.Length - charIndex - 6); // -6 beacuse: -1 cause of i + 1 and -5 cause of '.bars' extension
+
 			trackList.Clear();
 			fileLB.Items.Clear();
 			selectAllB.Enabled = true;
+			this.Text = $"{windowTitle} - {filePathFull}";
 
 			ConsoleWriteLine($"Opening {fileName}.bars");
-			using (SBinaryReader br = new SBinaryReader(File.OpenRead(filename))) {
+			using (SBinaryReader br = new SBinaryReader(File.OpenRead(filePathFull))) {
 				Stream bs = br.BaseStream;
 
 				string bars_header = br.ReadStringBytes(BARS_HEADER.Length);
@@ -152,16 +166,27 @@ namespace BarsTool {
 				extractB.Enabled = true;
 				if (curItems.Count == 1) {
 					replaceB.Enabled = true;
+					previewB.Enabled = true;
 					fileInfoTB.Text = GetSelectedTracks()[0].ToString();
 				}
 				else {
 					replaceB.Enabled = false;
+					//previewB.Enabled = false;
 					fileInfoTB.Clear();
 				}
 			}
 			else {
 				extractB.Enabled = false;
 				replaceB.Enabled = false;
+				previewB.Enabled = false;
+			}
+		}
+
+		private void PreviewB_Click(object sender, EventArgs e) {
+			TrackData selTrack = GetSelectedTracks()[0];
+			string tempPath = Path.GetTempPath();
+			if(selTrack.Extract(tempPath)) {
+				Process.Start(tempPath + Path.DirectorySeparatorChar + selTrack.GetFullName);
 			}
 		}
 
