@@ -41,6 +41,10 @@
 			this.sortCB = new System.Windows.Forms.CheckBox();
 			this.selectAllB = new System.Windows.Forms.Button();
 			this.previewB = new System.Windows.Forms.Button();
+			this.rstbChooseB = new System.Windows.Forms.Button();
+			this.rstbPathTB = new System.Windows.Forms.TextBox();
+			this.rstbUpdateB = new System.Windows.Forms.Button();
+			this.label6 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// filePathTB
@@ -74,7 +78,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 68);
+			this.label1.Location = new System.Drawing.Point(12, 106);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(31, 13);
 			this.label1.TabIndex = 4;
@@ -85,24 +89,25 @@
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 9);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(32, 13);
+			this.label2.Size = new System.Drawing.Size(73, 13);
 			this.label2.TabIndex = 6;
-			this.label2.Text = "Path:";
+			this.label2.Text = ".bars file path:";
 			// 
 			// fileLB
 			// 
 			this.fileLB.FormattingEnabled = true;
-			this.fileLB.Location = new System.Drawing.Point(12, 84);
+			this.fileLB.Location = new System.Drawing.Point(12, 122);
 			this.fileLB.Name = "fileLB";
 			this.fileLB.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.fileLB.Size = new System.Drawing.Size(379, 459);
 			this.fileLB.TabIndex = 7;
 			this.fileLB.SelectedIndexChanged += new System.EventHandler(this.FileLB_SelectedIndexChanged);
+			this.fileLB.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.FileLB_MouseDoubleClick);
 			// 
 			// extractB
 			// 
 			this.extractB.Enabled = false;
-			this.extractB.Location = new System.Drawing.Point(397, 208);
+			this.extractB.Location = new System.Drawing.Point(397, 246);
 			this.extractB.Name = "extractB";
 			this.extractB.Size = new System.Drawing.Size(75, 23);
 			this.extractB.TabIndex = 8;
@@ -113,7 +118,7 @@
 			// replaceB
 			// 
 			this.replaceB.Enabled = false;
-			this.replaceB.Location = new System.Drawing.Point(397, 237);
+			this.replaceB.Location = new System.Drawing.Point(397, 275);
 			this.replaceB.Name = "replaceB";
 			this.replaceB.Size = new System.Drawing.Size(75, 23);
 			this.replaceB.TabIndex = 9;
@@ -123,7 +128,7 @@
 			// 
 			// consoleTB
 			// 
-			this.consoleTB.Location = new System.Drawing.Point(397, 326);
+			this.consoleTB.Location = new System.Drawing.Point(397, 364);
 			this.consoleTB.Multiline = true;
 			this.consoleTB.Name = "consoleTB";
 			this.consoleTB.ReadOnly = true;
@@ -134,7 +139,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(397, 310);
+			this.label3.Location = new System.Drawing.Point(397, 348);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(48, 13);
 			this.label3.TabIndex = 11;
@@ -142,7 +147,7 @@
 			// 
 			// searchTB
 			// 
-			this.searchTB.Location = new System.Drawing.Point(210, 61);
+			this.searchTB.Location = new System.Drawing.Point(210, 99);
 			this.searchTB.Name = "searchTB";
 			this.searchTB.Size = new System.Drawing.Size(181, 20);
 			this.searchTB.TabIndex = 12;
@@ -151,7 +156,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(160, 64);
+			this.label4.Location = new System.Drawing.Point(160, 102);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(44, 13);
 			this.label4.TabIndex = 13;
@@ -159,7 +164,7 @@
 			// 
 			// fileInfoTB
 			// 
-			this.fileInfoTB.Location = new System.Drawing.Point(511, 103);
+			this.fileInfoTB.Location = new System.Drawing.Point(511, 141);
 			this.fileInfoTB.Multiline = true;
 			this.fileInfoTB.Name = "fileInfoTB";
 			this.fileInfoTB.ReadOnly = true;
@@ -170,7 +175,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(508, 87);
+			this.label5.Location = new System.Drawing.Point(508, 125);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(88, 13);
 			this.label5.TabIndex = 15;
@@ -181,7 +186,7 @@
 			this.sortCB.AutoSize = true;
 			this.sortCB.Checked = true;
 			this.sortCB.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.sortCB.Location = new System.Drawing.Point(103, 63);
+			this.sortCB.Location = new System.Drawing.Point(103, 101);
 			this.sortCB.Name = "sortCB";
 			this.sortCB.Size = new System.Drawing.Size(51, 17);
 			this.sortCB.TabIndex = 16;
@@ -192,7 +197,7 @@
 			// selectAllB
 			// 
 			this.selectAllB.Enabled = false;
-			this.selectAllB.Location = new System.Drawing.Point(397, 82);
+			this.selectAllB.Location = new System.Drawing.Point(397, 120);
 			this.selectAllB.Name = "selectAllB";
 			this.selectAllB.Size = new System.Drawing.Size(75, 23);
 			this.selectAllB.TabIndex = 19;
@@ -203,7 +208,7 @@
 			// previewB
 			// 
 			this.previewB.Enabled = false;
-			this.previewB.Location = new System.Drawing.Point(397, 151);
+			this.previewB.Location = new System.Drawing.Point(397, 189);
 			this.previewB.Name = "previewB";
 			this.previewB.Size = new System.Drawing.Size(75, 23);
 			this.previewB.TabIndex = 20;
@@ -212,11 +217,52 @@
 			this.previewB.Visible = false;
 			this.previewB.Click += new System.EventHandler(this.PreviewB_Click);
 			// 
+			// rstbChooseB
+			// 
+			this.rstbChooseB.Location = new System.Drawing.Point(551, 62);
+			this.rstbChooseB.Name = "rstbChooseB";
+			this.rstbChooseB.Size = new System.Drawing.Size(73, 23);
+			this.rstbChooseB.TabIndex = 22;
+			this.rstbChooseB.Text = "Choose File";
+			this.rstbChooseB.UseVisualStyleBackColor = true;
+			this.rstbChooseB.Click += new System.EventHandler(this.RstbChooseB_Click);
+			// 
+			// rstbPathTB
+			// 
+			this.rstbPathTB.Enabled = false;
+			this.rstbPathTB.Location = new System.Drawing.Point(12, 64);
+			this.rstbPathTB.Name = "rstbPathTB";
+			this.rstbPathTB.Size = new System.Drawing.Size(533, 20);
+			this.rstbPathTB.TabIndex = 21;
+			// 
+			// rstbUpdateB
+			// 
+			this.rstbUpdateB.Location = new System.Drawing.Point(630, 61);
+			this.rstbUpdateB.Name = "rstbUpdateB";
+			this.rstbUpdateB.Size = new System.Drawing.Size(97, 23);
+			this.rstbUpdateB.TabIndex = 23;
+			this.rstbUpdateB.Text = "Update RSTB";
+			this.rstbUpdateB.UseVisualStyleBackColor = true;
+			this.rstbUpdateB.Click += new System.EventHandler(this.RstbUpdateB_Click);
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(12, 48);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(79, 13);
+			this.label6.TabIndex = 24;
+			this.label6.Text = "RSTB file path:";
+			// 
 			// BarsViewerForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(800, 556);
+			this.ClientSize = new System.Drawing.Size(800, 593);
+			this.Controls.Add(this.label6);
+			this.Controls.Add(this.rstbUpdateB);
+			this.Controls.Add(this.rstbChooseB);
+			this.Controls.Add(this.rstbPathTB);
 			this.Controls.Add(this.previewB);
 			this.Controls.Add(this.selectAllB);
 			this.Controls.Add(this.sortCB);
@@ -263,6 +309,10 @@
 		private System.Windows.Forms.CheckBox sortCB;
 		private System.Windows.Forms.Button selectAllB;
 		private System.Windows.Forms.Button previewB;
+		private System.Windows.Forms.Button rstbChooseB;
+		private System.Windows.Forms.TextBox rstbPathTB;
+		private System.Windows.Forms.Button rstbUpdateB;
+		private System.Windows.Forms.Label label6;
 	}
 }
 

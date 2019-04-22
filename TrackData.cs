@@ -139,53 +139,59 @@ namespace BarsTool {
 		public void WriteData(SBinaryReader br, SBinaryWriter bw) {
 			Stream bs = br.BaseStream;
 			
-			bw.Write(br.ReadBytes(4)); //copy padding (why the hell not)
+			//if(trackFormat == "FSTP") {
+			//	bw.Write(br.ReadBytes(100));
+			//}
+			//else if(trackFormat == "FWAV") {
+				bw.Write(br.ReadBytes(4)); //copy padding (why the hell not)
+
+				bw.Write(loopEnd, amtaBom);
+
+
+				byte trackHeader = 0;
+				if (trackFormat == "FWAV")
+					trackHeader = 0;
+				else if (trackFormat == "FSTP")
+					trackHeader = 1;
+				bw.Write(trackHeader);
+
+				bw.Write(channelAmount);
+
+				bw.Write(trackHeader);
+
+				byte formatLoop = 0;
+				if (trackFormat == "FWAV")
+					formatLoop = 2;
+				else if (trackFormat == "FSTP")
+					formatLoop = 3;
+				if (Convert.ToBoolean(trackLooping))
+					formatLoop += 4;
+				bw.Write(formatLoop);
+
+
+				bs.Seek(8, SeekOrigin.Current); // seek to catch up with prev. written data
+				bw.Write(br.ReadBytes(4)); // copy unknown
+
+				bw.Write(sampleRate, amtaBom);
+
+				bw.Write(origLoopStart, amtaBom);
+
+				bw.Write(origLoopEnd, amtaBom);
+
+				bs.Seek(12, SeekOrigin.Current); // seek to catch up with prev. written data
+				bw.Write(br.ReadBytes(4)); // copy unknown
+
+				uint formatMark = 0;
+				if (trackFormat == "FWAV")
+					formatMark = 0;
+				else if (trackFormat == "FSTP")
+					formatMark = 2;
+				bw.Write(formatMark, amtaBom);
+
+				bs.Seek(4, SeekOrigin.Current); // seek to catch up with prev. written data
+				bw.Write(br.ReadBytes(64)); // copy the rest (unknown)
+			//}
 			
-			bw.Write(loopEnd, amtaBom);
-
-
-			byte trackHeader = 0;
-			if (trackExtension == "FWAV")
-				trackHeader = 0;
-			if (trackExtension == "FSTP")
-				trackHeader = 1;
-			bw.Write(trackHeader);
-
-			bw.Write(channelAmount);
-
-			bw.Write(trackHeader);
-
-			byte formatLoop = 0;
-			if (trackExtension == "FWAV")
-				formatLoop = 2;
-			else if (trackExtension == "FSTP")
-				formatLoop = 3;
-			if (Convert.ToBoolean(trackLooping))
-				formatLoop += 4;
-			bw.Write(formatLoop);
-
-			
-			bs.Seek(8, SeekOrigin.Current); // seek to catch up with prev. written data
-			bw.Write(br.ReadBytes(4)); // copy unknown
-
-			bw.Write(sampleRate, amtaBom);
-
-			bw.Write(origLoopStart, amtaBom);
-
-			bw.Write(origLoopEnd, amtaBom);
-
-			bs.Seek(12, SeekOrigin.Current); // seek to catch up with prev. written data
-			bw.Write(br.ReadBytes(4)); // copy unknown
-
-			uint formatMark = 0;
-			if (trackExtension == "FWAV")
-				formatMark = 0;
-			else if (trackExtension == "FSTP")
-				formatMark = 2;
-			bw.Write(formatMark);
-
-			bs.Seek(4, SeekOrigin.Current); // seek to catch up with prev. written data
-			bw.Write(br.ReadBytes(64)); // copy the rest (unknown)
 		}
 
 		public bool Extract(string path) {
@@ -222,10 +228,13 @@ namespace BarsTool {
 			info += $"Name: {trackName}{nl}";
 			info += $"Extension: {trackExtension}{nl}";
 			info += $"Encoding: {encoding}{nl}";
+			info += $"BOM: " + (infoBom == BOM.BigEndian ? $"Big Endian" : $"Little Endian") + $"{nl}{nl}";
+
 			info += $"Channels: {channelAmount}{nl}";
 			info += $"Sample rate: {sampleRate}{nl}";
 			info += $"Length: {length}s{nl}";
-			info += $"Looping: {isLooping}{nl}";
+			info += $"Looping: {isLooping}{nl}{nl}";
+
 			//if(isLooping) {
 				info += $"loopStart: {loopStart} ({loopStart/(float)sampleRate}s){nl}";
 				info += $"loopEnd: {loopEnd} ({loopEnd / (float)sampleRate}s){nl}";
@@ -236,7 +245,7 @@ namespace BarsTool {
 		}
 
 		private void ConsoleWriteLine(string text) {
-			BarsViewerForm.ConsoleWriteLine(text);
+			BarsViewerForm.ConsoleWriteLine2(text);
 		}
 	}
 }

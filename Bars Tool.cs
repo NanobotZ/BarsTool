@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -26,6 +27,8 @@ namespace BarsTool {
 		public static readonly string[] FWAV_EXT = { ".bfwav", ".bfstp" };
 		public static readonly string INFO_HEADER = "INFO";
 
+		public string rstbPath;
+
 		public string filePathFull;
 		public string filePath;
 		public string fileName;
@@ -37,9 +40,7 @@ namespace BarsTool {
 			InitializeComponent();
 			windowTitle = this.Text;
 			filePathFull = path;
-#if DEBUG
 			previewB.Visible = true;
-#endif
 		}
 
 		private void Form1_Load(object sender, EventArgs e) {
@@ -50,12 +51,95 @@ namespace BarsTool {
 				filePathTB.Text = filePathFull;
 				FileOpenB_Click(null, null); // smelly workaround
 			}
+
+			Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+			//rstbPath = ConfigurationManager.AppSettings.Get("rstbPath");
+			rstbPath = config.AppSettings.Settings["rstbPath"].Value;
+			rstbPathTB.Text = rstbPath;
+
+			//TODO change into RSTB stuff
+
+			//System.Diagnostics.Process process = new System.Diagnostics.Process();
+			//System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+			//startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+			//startInfo.FileName = "cmd.exe";
+			//startInfo.Arguments = "rstbtool";
+			//process.StartInfo = startInfo;
+			//process.Start();
+		}
+
+		private void RstbChooseB_Click(object sender, EventArgs e) {
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			openFileDialog.Filter = "RSTB File|*.srsizetable";
+			openFileDialog.Title = "Select an RSTB File";
+			if (openFileDialog.ShowDialog() == DialogResult.OK) {
+				if (openFileDialog.FileName.EndsWith(".srsizetable")) {
+					string fn = openFileDialog.FileName;
+					rstbPath = fn;
+					rstbPathTB.Text = fn;
+					//ConfigurationManager.AppSettings.Set("rstbPath", rstbPath);
+					Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+					if (config.AppSettings.Settings["rstbPath"] == null)
+						config.AppSettings.Settings.Add("rstbPath", rstbPath);
+					else
+						config.AppSettings.Settings["rstbPath"].Value = rstbPath;
+					config.Save();
+				}
+			}
+		}
+
+		private void RstbUpdateB_Click(object sender, EventArgs eve) {
+			if(!File.Exists(rstbPath)) {
+				ConsoleWriteLine("RSTB File path is wrong, no file found!");
+				return;
+			}
+
+			if(!File.Exists(filePathFull)) {
+				ConsoleWriteLine("BARS File path is wrong, no file found!");
+				return;
+			}
+
+			if (fileName == "" || barsBom == 0) {
+				ConsoleWriteLine("BARS File must be opened to do that!");
+				return;
+			}
+
+			int bytes = File.ReadAllBytes(filePathFull).Length + 1024;
+			//ConsoleWriteLine($"New size: {bytes}");
+
+			string commandArgs = "";
+			if (barsBom == BOM.BigEndian)
+				commandArgs += "-b ";
+			commandArgs += $"\"{rstbPath}\" set Sound/Resource/{fileName}.bars {bytes}";
+
+			Process process = new Process();
+			process.StartInfo.CreateNoWindow = true;
+			process.StartInfo.UseShellExecute = false;
+			//startInfo.FileName = "cmd.exe";
+			process.StartInfo.FileName = "rstbtool";
+			process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+			process.StartInfo.RedirectStandardOutput = true;
+			process.OutputDataReceived += (s, e) => {
+				string msg = e.Data;
+				ConsoleWriteLine(msg);
+			};
+			process.StartInfo.Arguments = commandArgs;
+			//ConsoleWriteLine("Running a command: rstbtool " + process.StartInfo.Arguments);
+			try {
+				process.Start();
+				ConsoleWriteLine("rstbtool's output:");
+				process.BeginOutputReadLine();
+			}
+			catch (Exception e) {
+				ConsoleWriteLine(e.Message);
+			}
 		}
 
 		private void FileChooseB_Click(object sender, EventArgs e) {
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = "BARS Files|*.bars";
-			openFileDialog.Title = "Selact a BARS File";
+			openFileDialog.Title = "Select a BARS File";
 			if (openFileDialog.ShowDialog() == DialogResult.OK) {
 				if (openFileDialog.FileName.EndsWith(".bars")) {
 					string fn = openFileDialog.FileName;
@@ -171,7 +255,6 @@ namespace BarsTool {
 				}
 				else {
 					replaceB.Enabled = false;
-					//previewB.Enabled = false;
 					fileInfoTB.Clear();
 				}
 			}
@@ -180,6 +263,11 @@ namespace BarsTool {
 				replaceB.Enabled = false;
 				previewB.Enabled = false;
 			}
+		}
+
+		private void FileLB_MouseDoubleClick(object sender, MouseEventArgs e) {
+			if (GetSelectedTracks().Length > 0)
+				PreviewB_Click(null, null);
 		}
 
 		private void PreviewB_Click(object sender, EventArgs e) {
@@ -241,7 +329,11 @@ namespace BarsTool {
 			}
 
 			byte[] newBytes = File.ReadAllBytes(fileName); // read the new file
-			byte[] newPaddedBytes = new byte[CalcPaddedLength(newBytes.Length)]; // create a byte array with a correct length (probably MUST be padded to a %64 == 0)
+			byte[] newPaddedBytes;
+			if(index != trackList.Count - 1)
+				newPaddedBytes = new byte[CalcPaddedLength(newBytes.Length)]; // create a byte array with a correct length (probably MUST be padded to a %64 == 0)
+			else
+				newPaddedBytes = new byte[newBytes.Length]; // if it's the last file - "skip" the padding (god why am I so lazy)
 			newBytes.CopyTo(newPaddedBytes, 0); // and copy the new file to that array
 
 			TrackData newTrack = new TrackData(trackToReplace);
@@ -249,12 +341,13 @@ namespace BarsTool {
 			using (SBinaryReader br = new SBinaryReader(new MemoryStream(newBytes))) {
 				newTrack.ReadData(br);
 			}
+			newTrack.trackOffset = trackToReplace.trackOffset;
 
 			if (!newTrack.validTrack) {
 				ConsoleWriteLine("Replacing interrupted, new track is not valid");
 			}
 
-			newTrack.trackOffset = trackToReplace.trackOffset;
+			
 			
 			// this stuff is messy, sorry
 			string backupPath = $"{filePath}{Path.DirectorySeparatorChar}{this.fileName}.bars.backup";
@@ -335,6 +428,7 @@ namespace BarsTool {
 			IEnumerable<TrackData> fillTracks = tracks;
 			if (sortCB.Checked)
 				fillTracks = fillTracks.OrderBy(x => x.trackName);
+
 			foreach (var track in fillTracks) {
 				fileLB.Items.Add(track.trackName);
 			}
@@ -358,7 +452,14 @@ namespace BarsTool {
 			return length + 64 - off;
 		}
 
-		public static void ConsoleWriteLine(string text) {
+		public void ConsoleWriteLine(string text) {
+			if (!InvokeRequired)
+				consoleBox.AppendText(text + Environment.NewLine);
+			else
+				Invoke(new Action<string>(ConsoleWriteLine), text);
+		}
+
+		public static void ConsoleWriteLine2(string text) {
 			consoleBox.AppendText(text + Environment.NewLine);
 		}
 	}
